@@ -11,6 +11,8 @@ namespace opossum {
 
 class Table;
 
+std::ifstream& get_line(std::ifstream &infile, std::string &line);
+
 std::shared_ptr<Table> load_table(const std::string& file_name, size_t chunk_size = Chunk::DEFAULT_SIZE);
 
 /**

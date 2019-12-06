@@ -17,11 +17,21 @@ using namespace std::string_literals;  // NOLINT
 
 namespace opossum {
 
+std::ifstream& get_line(std::ifstream &infile, std::string &line) {
+  std::getline(infile, line);
+  std::cout << line << std::endl;
+  if(!line.empty() && *line.rbegin() == '\r') {
+    line.erase(line.length()-1, 1);
+    std::cout << "erased win line ending" << std::endl;
+  }
+  return infile;
+}
+
 std::shared_ptr<Table> create_table_from_header(std::ifstream& infile, size_t chunk_size) {
   std::string line;
-  std::getline(infile, line);
+  get_line(infile, line);
   std::vector<std::string> column_names = split_string_by_delimiter(line, '|');
-  std::getline(infile, line);
+  get_line(infile, line);
   std::vector<std::string> column_types = split_string_by_delimiter(line, '|');
 
   auto column_nullable = std::vector<bool>{};
@@ -57,7 +67,7 @@ std::shared_ptr<Table> load_table(const std::string& file_name, size_t chunk_siz
   auto table = create_table_from_header(infile, chunk_size);
 
   std::string line;
-  while (std::getline(infile, line)) {
+  while (get_line(infile, line)) {
     auto string_values = split_string_by_delimiter(line, '|');
     auto variant_values = std::vector<AllTypeVariant>(string_values.size());
 

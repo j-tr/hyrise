@@ -29,4 +29,11 @@ TEST_F(LoadTableTest, AllChunksFinalized) {
   }
 }
 
+TEST_F(LoadTableTest, WindowsLineEndings) {
+  const auto table = load_table("resources/test_data/tbl/all_data_types_sorted_win.tbl", 2);
+  
+  EXPECT_EQ(table->row_count(), 8);
+  EXPECT_EQ(table->chunk_count(), 10);
+}
+
 }  // namespace opossum
