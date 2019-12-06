@@ -67,24 +67,25 @@ class DictionarySegmentIterable : public PointAccessibleSegmentIterable<Dictiona
         : _dictionary_begin_it{dictionary_begin_it},
           _null_value_id{null_value_id},
           _attribute_it{attribute_it},
-          _chunk_offset{chunk_offset} {}
+          //_chunk_offset{chunk_offset},
+          _begin{attribute_it} {}
 
    private:
     friend class boost::iterator_core_access;  // grants the boost::iterator_facade access to the private interface
-
+ls
     void increment() {
       ++_attribute_it;
-      ++_chunk_offset;
+      //++_chunk_offset;
     }
 
     void decrement() {
       --_attribute_it;
-      --_chunk_offset;
+      //--_chunk_offset;
     }
 
     void advance(std::ptrdiff_t n) {
       _attribute_it += n;
-      _chunk_offset += n;
+      //_chunk_offset += n;
     }
 
     bool equal(const Iterator& other) const { return _attribute_it == other._attribute_it; }
@@ -95,16 +96,18 @@ class DictionarySegmentIterable : public PointAccessibleSegmentIterable<Dictiona
       const auto value_id = static_cast<ValueID>(*_attribute_it);
       const auto is_null = (value_id == _null_value_id);
 
-      if (is_null) return SegmentPosition<T>{T{}, true, _chunk_offset};
+      ChunkOffset offset = ChunkOffset(_attribute_it - _begin);
+      if (is_null) return SegmentPosition<T>{T{}, true, offset};
 
-      return SegmentPosition<T>{T{*(_dictionary_begin_it + value_id)}, false, _chunk_offset};
+      return SegmentPosition<T>{T{*(_dictionary_begin_it + value_id)}, false, offset};
     }
 
    private:
     DictionaryIteratorType _dictionary_begin_it;
     ValueID _null_value_id;
     ZsIteratorType _attribute_it;
-    ChunkOffset _chunk_offset;
+    //ChunkOffset _chunk_offset;
+    ZsIteratorType _begin;
   };
 
   template <typename ZsDecompressorType, typename DictionaryIteratorType>
