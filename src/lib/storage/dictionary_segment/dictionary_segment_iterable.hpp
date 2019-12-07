@@ -72,7 +72,7 @@ class DictionarySegmentIterable : public PointAccessibleSegmentIterable<Dictiona
 
    private:
     friend class boost::iterator_core_access;  // grants the boost::iterator_facade access to the private interface
-ls
+
     void increment() {
       ++_attribute_it;
       //++_chunk_offset;
